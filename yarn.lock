@@ -1477,7 +1477,7 @@ embla-carousel-reactive-utils@8.1.8:
   resolved "https://registry.npmjs.org/embla-carousel-reactive-utils/-/embla-carousel-reactive-utils-8.1.8.tgz"
   integrity sha512-bwV/23WD3Ecm0YuQ4I6Syzs3tdVJw0Oj3VCZlEODv1kH8LZ5kNDLgX2Uvx5brvoe2hpifBHPBQ8gYlxNL5kMPA==
 
-embla-carousel@8.1.8:
+embla-carousel@^8.1.8, embla-carousel@8.1.8:
   version "8.1.8"
   resolved "https://registry.npmjs.org/embla-carousel/-/embla-carousel-8.1.8.tgz"
   integrity sha512-KuHPA8qcAts6YE6ELtt38XYAb26hnKw8Ga0lSXmrhm1oI97t6oACFkqSsy33dfeZQEhaZB6VwWvaWQJRJVgSgA==
