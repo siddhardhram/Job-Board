@@ -76,7 +76,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="hirrd-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
   );
