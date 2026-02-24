@@ -21,8 +21,7 @@ import { getJobs } from "@/api/apiJobs";
 import { Search, XCircle, SlidersHorizontal } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────
-   JobListing — uses local useMemo filtering in demo mode
-   so there are zero stale-closure / async race conditions.
+   JobListing – client-side filtering, clickable company & location
 ───────────────────────────────────────────────────────── */
 const JobListing = () => {
   const [location, setLocation] = useState("");
@@ -65,13 +64,13 @@ const JobListing = () => {
       result = result.filter((j) => j.location === location);
     }
     if (company_id) {
-      result = result.filter((j) => String(j.company_id) === company_id);
+      result = result.filter((j) => String(j.company_id) === String(company_id));
     }
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
         (j) =>
-          j.title.toLowerCase().includes(q) ||
+          j.title?.toLowerCase().includes(q) ||
           j.company?.name?.toLowerCase().includes(q) ||
           j.description?.toLowerCase().includes(q)
       );
@@ -93,10 +92,22 @@ const JobListing = () => {
     setSearchQuery("");
   };
 
+  /* ── Click-to-filter from card ── */
+  const handleCompanyClick = (id, _name) => {
+    setCompany_id(String(id));
+    // scroll to top of listing smoothly
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleLocationClick = (loc) => {
+    setLocation(loc);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const hasFilters = location || company_id || searchQuery;
 
   const selectedCompanyName = company_id && companies
-    ? companies.find((c) => String(c.id) === company_id)?.name
+    ? companies.find((c) => String(c.id) === String(company_id))?.name
     : null;
 
   if (!isLoaded) {
@@ -180,7 +191,7 @@ const JobListing = () => {
               {selectedCompanyName ? `🏢 ${selectedCompanyName}` : "🏢 All Companies"}
             </SelectValue>
           </SelectTrigger>
-          <SelectContent className="bg-[#0d1f3c] border-indigo-900/50">
+          <SelectContent className="bg-[#0d1f3c] border-indigo-900/50 max-h-72 overflow-y-auto">
             <SelectGroup>
               <SelectItem value="__none__" className="text-slate-400 italic focus:bg-indigo-900/40">
                 All Companies
@@ -261,6 +272,8 @@ const JobListing = () => {
                   key={job.id}
                   job={job}
                   savedInit={job?.saved?.length > 0}
+                  onCompanyClick={handleCompanyClick}
+                  onLocationClick={handleLocationClick}
                 />
               ))}
             </div>

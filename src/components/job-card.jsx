@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
+import { Heart, MapPinIcon, Trash2Icon, Building2 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -24,6 +24,8 @@ const JobCard = ({
   savedInit = false,
   onJobAction = () => { },
   isMyJob = false,
+  onCompanyClick = null,   // (company_id: string, company_name: string) => void
+  onLocationClick = null,  // (location: string) => void
 }) => {
   const [saved, setSaved] = useState(savedInit);
   const { user } = useUser();
@@ -89,23 +91,50 @@ const JobCard = ({
 
       <CardContent className="flex flex-col gap-4 flex-1 pt-0">
         <div className="flex items-center justify-between">
+          {/* Clickable Company Name */}
           {job.company && (
-            <span className="text-sm font-medium text-slate-300">
-              {job.company.name}
-            </span>
+            onCompanyClick ? (
+              <button
+                type="button"
+                onClick={() => onCompanyClick(String(job.company_id), job.company.name)}
+                className="text-sm font-medium text-indigo-300 hover:text-indigo-200 hover:underline underline-offset-2 transition-colors flex items-center gap-1 group"
+                title={`Filter by ${job.company.name}`}
+              >
+                <Building2 size={12} className="text-indigo-400/70 group-hover:text-indigo-300 transition-colors" />
+                {job.company.name}
+              </button>
+            ) : (
+              <span className="text-sm font-medium text-slate-300">
+                {job.company.name}
+              </span>
+            )
           )}
-          <div className="flex items-center gap-1.5 text-sm text-slate-400">
-            <MapPinIcon size={13} className="text-indigo-400" />
-            {job.location}
-          </div>
+
+          {/* Clickable Location */}
+          {onLocationClick ? (
+            <button
+              type="button"
+              onClick={() => onLocationClick(job.location)}
+              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-indigo-300 hover:underline underline-offset-2 transition-colors group"
+              title={`Filter by ${job.location}`}
+            >
+              <MapPinIcon size={13} className="text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+              {job.location}
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <MapPinIcon size={13} className="text-indigo-400" />
+              {job.location}
+            </div>
+          )}
         </div>
 
         {/* Status badge */}
         <div className="flex gap-2">
           <span
             className={`text-xs px-2.5 py-1 rounded-full font-medium ${job.isOpen
-                ? "bg-green-900/30 text-green-400 border border-green-700/40"
-                : "bg-red-900/30 text-red-400 border border-red-700/40"
+              ? "bg-green-900/30 text-green-400 border border-green-700/40"
+              : "bg-red-900/30 text-red-400 border border-red-700/40"
               }`}
           >
             {job.isOpen ? "🟢 Open" : "🔴 Closed"}
@@ -140,8 +169,8 @@ const JobCard = ({
             disabled={loadingSavedJob}
             title={saved ? "Remove from saved" : "Save job"}
             className={`shrink-0 border-indigo-700/40 transition-all duration-200 ${saved
-                ? "bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
-                : "hover:bg-slate-700/50"
+              ? "bg-pink-500/20 border-pink-500/50 hover:bg-pink-500/30"
+              : "hover:bg-slate-700/50"
               }`}
           >
             <Heart
